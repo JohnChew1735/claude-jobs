@@ -4,6 +4,16 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.1.3]
+
+### Added
+
+- `examples/openclaw/`: a sample config fragment and an apply script that merges the CLI backend into an existing gateway config — dry run by default, timestamped backup, refuses to run when the CLI is not logged in, and drops direct-API model refs that would silently become a fallback.
+
+### Changed
+
+- Documentation examples now use Sonnet 5 / Opus 5 model refs.
+
 ## [0.1.2]
 
 ### Changed

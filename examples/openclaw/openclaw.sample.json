@@ -1,0 +1,31 @@
+{
+  "_comment": "Merge these keys into ~/.openclaw/openclaw.json. This is a fragment, not a complete config — apply it with apply-claude-cli-backend.mjs, which merges rather than overwrites.",
+  "auth": {
+    "profiles": {
+      "anthropic:claude-cli": {
+        "provider": "claude-cli",
+        "mode": "oauth"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "claude-cli/claude-sonnet-5"
+      },
+      "models": {
+        "claude-cli/claude-sonnet-5": {},
+        "claude-cli/claude-opus-5": {},
+        "claude-cli/claude-haiku-4-5": {}
+      },
+      "cliBackends": {
+        "claude-cli": {
+          "command": "/opt/homebrew/bin/claude"
+        }
+      },
+      "agentRuntime": {
+        "id": "claude-cli"
+      }
+    }
+  }
+}

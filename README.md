@@ -88,12 +88,19 @@ A scheduled job and a chat bot are the same substrate with a different trigger. 
 {
   "agents": {
     "defaults": {
-      "model": { "primary": "claude-cli/claude-sonnet-4-6" },
+      "model": { "primary": "claude-cli/claude-sonnet-5" },
       "cliBackends": { "claude-cli": { "command": "/opt/homebrew/bin/claude" } },
       "agentRuntime": { "id": "claude-cli" }
     }
   }
 }
+```
+
+A ready-to-run script that merges this into an existing gateway config, with a backup and a dry run, is in [examples/openclaw/](examples/openclaw/):
+
+```bash
+node examples/openclaw/apply-claude-cli-backend.mjs            # show the diff
+node examples/openclaw/apply-claude-cli-backend.mjs --write    # apply it
 ```
 
 The full walkthrough — how a turn executes, why the model list must not contain a direct-API model, and what a long-running gateway does differently from a one-shot job — is in [docs/openclaw.md](docs/openclaw.md).

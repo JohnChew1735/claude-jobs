@@ -8,7 +8,7 @@ This is the same substrate as `claude-jobs` with a different trigger: a long-run
 
 | Concept | Question it answers | Example value |
 | --- | --- | --- |
-| Model ref | Which model | `anthropic/claude-sonnet-4-6` |
+| Model ref | Which model | `anthropic/claude-sonnet-5` |
 | Agent runtime / CLI backend | What executes the turn | `claude-cli` → `/opt/homebrew/bin/claude` |
 
 Legacy refs such as `claude-cli/<model>` fold both choices into one string and still work; the modern form keeps them apart.
@@ -24,10 +24,10 @@ Legacy refs such as `claude-cli/<model>` fold both choices into one string and s
   },
   "agents": {
     "defaults": {
-      "model": { "primary": "claude-cli/claude-sonnet-4-6" },
+      "model": { "primary": "claude-cli/claude-sonnet-5" },
       "models": {
-        "claude-cli/claude-sonnet-4-6": {},
-        "claude-cli/claude-opus-4-7": {},
+        "claude-cli/claude-sonnet-5": {},
+        "claude-cli/claude-opus-5": {},
         "claude-cli/claude-haiku-4-5": {}
       },
       "cliBackends": { "claude-cli": { "command": "/opt/homebrew/bin/claude" } },
@@ -36,6 +36,8 @@ Legacy refs such as `claude-cli/<model>` fold both choices into one string and s
   }
 }
 ```
+
+A script that merges exactly this into an existing config — with a dry run, a timestamped backup, and a refusal to proceed if the CLI is not logged in — is in [../examples/openclaw/](../examples/openclaw/).
 
 Setup is two steps — log the CLI in, then point model selection at it:
 
