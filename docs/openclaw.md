@@ -1,6 +1,8 @@
-# Worked example: a chat gateway on the local CLI
+# Worked example: a chat gateway on the local CLI, with no API key
 
-[OpenClaw](https://docs.openclaw.ai) is a self-hosted gateway that connects chat channels to an agent. It can execute every turn through the local Claude Code CLI instead of calling the API — the same idea as this package, applied to a long-running service rather than a scheduled script. It is included here because the configuration shows how the pieces are named in a system that has thought about it carefully.
+[OpenClaw](https://docs.openclaw.ai) is a self-hosted gateway that connects chat channels — Zalo, Telegram, Slack, Discord, iMessage — to an agent. It can execute every turn through the local Claude Code CLI instead of calling the API, so a bot that answers messages all day runs on the same subscription login you already use interactively, and the config file contains no credential at all.
+
+This is the same substrate as `claude-jobs` with a different trigger: a long-running service answering inbound messages, rather than a scheduled one-shot. The configuration below is worth reading even if you never install OpenClaw, because it names the two choices that are easy to conflate.
 
 ## Two separate choices
 

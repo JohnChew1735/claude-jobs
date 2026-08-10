@@ -9,7 +9,7 @@ The mechanism `claude-jobs` uses — let the already-logged-in Claude Code CLI e
 | Scheduled local automation | `claude -p "<prompt>" --permission-mode bypassPermissions --output-format stream-json` under launchd/systemd/cron | What this package generates. Running the CLI on your own machine is the product working as designed |
 | CI on GitHub | `claude-code-action` with the `claude_code_oauth_token` input instead of `anthropic_api_key` | Token from `claude setup-token`, stored as a repository secret. Runs draw on the quota of whoever created the token |
 | Your own agent or app | Claude Agent SDK authenticating as your account rather than with an API key | Supported for subscription plans |
-| Chat gateway / bot | Route turns through the local CLI as the execution backend instead of calling the API | See [openclaw.md](openclaw.md) for a worked configuration |
+| Chat gateway / bot | Route turns through the local CLI as the execution backend instead of calling the API | A self-hosted gateway (OpenClaw and similar) answers chat messages on your subscription with no key in its config — worked example in [openclaw.md](openclaw.md) |
 
 The common requirement: Claude Code must be logged in **on the host that runs the work**, and the credential is `CLAUDE_CODE_OAUTH_TOKEN`, not `ANTHROPIC_API_KEY`.
 

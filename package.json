@@ -1,6 +1,6 @@
 {
   "name": "claude-jobs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Scheduled, unattended Claude Code CLI jobs. Runs on your Claude subscription via the local CLI — no ANTHROPIC_API_KEY.",
   "keywords": [
     "claude",
@@ -12,7 +12,9 @@
     "automation",
     "agent",
     "headless",
-    "oauth"
+    "oauth",
+    "openclaw",
+    "chatbot"
   ],
   "license": "MIT",
   "type": "module",

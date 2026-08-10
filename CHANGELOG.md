@@ -4,6 +4,12 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.1.2]
+
+### Changed
+
+- Surfaced the chat-gateway case on the front page: a self-hosted gateway can answer messages through the same logged-in CLI, with no key in its config. Same substrate as a scheduled job, different trigger.
+
 ## [0.1.1]
 
 ### Fixed

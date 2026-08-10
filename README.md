@@ -80,6 +80,26 @@ Details and the reasoning behind each one: [docs/design.md](docs/design.md).
 
 The same "subscription instead of API key" idea shows up in a few officially supported places — GitHub Actions with `claude_code_oauth_token`, the Agent SDK authenticating as your account, and chat gateways that execute turns through the local CLI. Where each one fits, and where the line is: [docs/use-cases.md](docs/use-cases.md).
 
+### Answering a chat message instead of a schedule
+
+A scheduled job and a chat bot are the same substrate with a different trigger. [OpenClaw](https://docs.openclaw.ai) is a self-hosted gateway that connects Zalo, Telegram, Slack and friends to an agent, and it can run every turn through your logged-in CLI — no API key in the config at all:
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "model": { "primary": "claude-cli/claude-sonnet-4-6" },
+      "cliBackends": { "claude-cli": { "command": "/opt/homebrew/bin/claude" } },
+      "agentRuntime": { "id": "claude-cli" }
+    }
+  }
+}
+```
+
+The full walkthrough — how a turn executes, why the model list must not contain a direct-API model, and what a long-running gateway does differently from a one-shot job — is in [docs/openclaw.md](docs/openclaw.md).
+
+Run both and you cover the two halves: the gateway answers when someone asks, `claude-jobs` acts when nobody does.
+
 ## Contributing
 
 Issues and PRs are welcome — especially scheduler support beyond launchd/systemd/cron, notifier recipes, and prompt templates that survive real unattended use. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
