@@ -1,0 +1,7 @@
+[Unit]
+Description=claude-jobs: {{JOB_NAME}}
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash {{RUNNER}}
+WorkingDirectory={{WORKDIR}}

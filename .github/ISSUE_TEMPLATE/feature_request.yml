@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The failure or friction this fixes
+      description: What went wrong, or what you had to do by hand.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you have in mind
+      description: A flag, a scheduler backend, a notifier recipe — sketch is fine.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This does not require a runtime dependency, or I have explained why one is unavoidable
+        - label: This does not proxy the subscription as an API for other tools (see docs/policy.md)

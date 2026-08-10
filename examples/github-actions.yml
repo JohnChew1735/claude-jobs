@@ -1,0 +1,40 @@
+# Scheduled Claude Code run in CI, authenticated with a subscription token
+# instead of an API key.
+#
+# Setup:
+#   1. Run `claude setup-token` on a machine where Claude Code is logged in.
+#   2. Store the printed token as the repository secret CLAUDE_CODE_OAUTH_TOKEN.
+#
+# The run draws on the usage limits of whoever created the token — that quota is
+# personal and does not pool across a team, which is exactly when an API key is
+# the better choice instead.
+
+name: Nightly maintenance
+
+on:
+  schedule:
+    - cron: '17 3 * * *' # off the hour: everyone schedules on :00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Read .github/playbooks/nightly.md and follow it end to end.
+
+            You are running unattended: never ask a question, and record any
+            decision that needs a human in the pull request description instead
+            of stopping.
+
+            Open a pull request with the changes. Do not push to the default
+            branch directly.

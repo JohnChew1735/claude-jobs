@@ -1,0 +1,50 @@
+{
+  "name": "claude-jobs",
+  "version": "0.1.0",
+  "description": "Scheduled, unattended Claude Code CLI jobs. Runs on your Claude subscription via the local CLI — no ANTHROPIC_API_KEY.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "cron",
+    "launchd",
+    "systemd",
+    "scheduler",
+    "automation",
+    "agent",
+    "headless",
+    "oauth"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "claude-jobs": "bin/claude-jobs.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "check": "node --check bin/claude-jobs.js && node --check src/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinhnguyenthanhdn/claude-jobs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vinhnguyenthanhdn/claude-jobs/issues"
+  },
+  "homepage": "https://github.com/vinhnguyenthanhdn/claude-jobs#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
