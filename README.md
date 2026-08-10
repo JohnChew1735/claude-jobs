@@ -47,6 +47,25 @@ Requires Node 18.17+, Claude Code installed and logged in (`claude auth login`) 
 
 Useful `init` flags: `--skill`, `--task`, `--prompt-file`, `--at HH:MM`, `--jitter`, `--workdir`, `--scheduler`, `--model`, `--precheck`, `--notify`, `--permission-mode`. Run `claude-jobs help` for the full list.
 
+## What people run
+
+A job earns its place when the work repeats, needs judgement rather than just a command, and produces something short enough to read over coffee. The five that pay off fastest:
+
+- **Dependency and CVE triage.** Run the audit, then separate what actually reaches your code from what sits in a devDependency nothing calls, and open a PR for the safe patch bumps. The sorting is the value — listing every advisory is what you already ignore.
+- **Morning error triage.** Read overnight errors, group them, and say which ones deserve attention. A dashboard counts them; this one interprets them.
+- **CI flake triage.** Read the day's failed runs, group by cause, name the tests that failed for reasons unrelated to the change. A week of this gives you a ranked flake list instead of a feeling.
+- **Docs drift.** Compare the docs against the code and open a PR for what diverged — renamed flags, examples that no longer run. Nobody wants this job; an agent never gets bored of it.
+- **A digest with your taste in it.** Read the sources you chose and keep only what touches what you are working on now. The filter is what makes it different from an RSS reader.
+
+```bash
+claude-jobs init dep-triage --skill ~/playbooks/deps.md --at 02:30 \
+  --workdir ~/src/api \
+  --precheck 'git -C ~/src/api fetch --quiet' \
+  --notify 'gh issue comment 42 --body "$CLAUDE_JOB_MESSAGE"'
+```
+
+More ideas — release notes, issue triage, cost anomalies, backup verification, competitor watch — plus the jobs that are a bad fit and why: [docs/use-case-ideas.md](docs/use-case-ideas.md).
+
 ## What a job looks like on disk
 
 ```

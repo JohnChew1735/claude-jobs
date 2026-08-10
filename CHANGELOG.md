@@ -4,6 +4,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.1.4]
+
+### Added
+
+- README now names the five jobs that pay off fastest, with a worked command.
+- `docs/use-case-ideas.md`: the longer list — release notes, issue triage, cost anomalies, backup verification, competitor watch, and the jobs that are a bad fit for a scheduled agent.
+
 ## [0.1.3]
 
 ### Added
