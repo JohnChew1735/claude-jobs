@@ -4,8 +4,6 @@ Scheduled, unattended [Claude Code](https://claude.com/claude-code) runs — dri
 
 One command scaffolds the whole thing: a prompt, a hardened runner script, and a real scheduler entry (launchd, systemd or cron).
 
-*[Tiếng Việt](docs/vi/README.md)*
-
 ```bash
 npx claude-jobs init morning-report \
   --skill ./playbooks/morning-report.md \
