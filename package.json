@@ -33,7 +33,7 @@
     "node": ">=18.17"
   },
   "scripts": {
-    "test": "node --test \"test/*.test.js\"",
+    "test": "node --test",
     "check": "node --check bin/claude-jobs.js && node --check src/cli.js"
   },
   "repository": {
