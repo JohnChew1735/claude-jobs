@@ -146,11 +146,37 @@ export function uninstall(job) {
   }
 }
 
-/** Best-effort "is this job actually registered right now". */
+/**
+ * Whether the scheduler will actually fire this job.
+ *
+ * `init` writes the unit file so you can read it before committing, so the file
+ * existing proves nothing — ask the scheduler itself.
+ */
 export function isInstalled(job) {
   const { name, scheduler } = job
-  if (scheduler === 'launchd') return existsSync(launchdPlist(name))
-  if (scheduler === 'systemd') return existsSync(systemdUnit(name, 'timer'))
+
+  if (scheduler === 'launchd') {
+    if (!existsSync(launchdPlist(name))) return false
+    try {
+      execFileSync('launchctl', ['list', launchdLabel(name)], { stdio: 'ignore' })
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  if (scheduler === 'systemd') {
+    if (!existsSync(systemdUnit(name, 'timer'))) return false
+    try {
+      execFileSync('systemctl', ['--user', 'is-enabled', `claude-jobs-${name}.timer`], {
+        stdio: 'ignore',
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
   if (scheduler === 'cron') return currentCrontab().includes(cronMarker(name))
   return false
 }

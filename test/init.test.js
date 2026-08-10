@@ -63,6 +63,24 @@ test('init refuses to clobber an existing job without --force', () => {
   })
 })
 
+test('--version prints the package version', () => {
+  withHome((home) => {
+    const pkg = JSON.parse(
+      readFileSync(fileURLToPath(new URL('../package.json', import.meta.url)), 'utf8'),
+    )
+    assert.equal(cli(home, ['--version']).trim(), pkg.version)
+  })
+})
+
+test('a freshly scaffolded job is not reported as scheduled', () => {
+  withHome((home) => {
+    // init writes the unit file so you can read it first; that is not the same
+    // as the scheduler having accepted it.
+    cli(home, ['init', 'demo', '--task', 'x'])
+    assert.match(cli(home, ['status', 'demo']), /not installed/)
+  })
+})
+
 test('a job name that would break a unit filename is rejected', () => {
   withHome((home) => {
     assert.throws(() => cli(home, ['init', 'Bad Name', '--task', 'x']), /invalid job name/)

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import {
   cmdDoctor,
   cmdInit,
@@ -20,6 +22,7 @@ Usage:
   claude-jobs logs <name> [--lines N] tail the job log
   claude-jobs status <name>           schedule, paths and the last summary
   claude-jobs doctor                  check the CLI, its login and the scheduler
+  claude-jobs --version               print the installed version
 
 init options:
   --skill <path>          file the agent should read and follow (SKILL.md, runbook, checklist)
@@ -61,9 +64,19 @@ export function parseArgs(argv) {
   return { args, flags }
 }
 
+export function version() {
+  const pkg = JSON.parse(readFileSync(fileURLToPath(new URL('../package.json', import.meta.url)), 'utf8'))
+  return pkg.version
+}
+
 export async function main(argv) {
   const { args, flags } = parseArgs(argv)
   const command = args.shift()
+
+  if (flags.version || command === 'version') {
+    console.log(version())
+    return
+  }
 
   if (!command || flags.help || command === 'help') {
     console.log(USAGE)

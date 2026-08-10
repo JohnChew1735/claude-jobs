@@ -4,6 +4,16 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.1.1]
+
+### Fixed
+
+- `list` and `status` reported a job as installed as soon as it was scaffolded. `init` writes the unit file so it can be read before committing to it, which is not the same as the scheduler having accepted it — installed state is now read from `launchctl` / `systemctl` instead of from the file's existence.
+
+### Added
+
+- `claude-jobs --version`.
+
 ## [0.1.0]
 
 Initial release.
