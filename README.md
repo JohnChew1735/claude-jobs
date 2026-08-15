@@ -126,6 +126,15 @@ The full walkthrough — how a turn executes, why the model list must not contai
 
 Run both and you cover the two halves: the gateway answers when someone asks, `claude-jobs` acts when nobody does.
 
+## Related tools
+
+Two separate concerns around the same CLI; either works on its own.
+
+| Tool | What it does |
+|---|---|
+| `claude-jobs` (this repo) | Runs Claude Code on a schedule, unattended, and reports the outcome |
+| [`claude-router`](https://github.com/vinhnguyenthanhdn/claude-router) | Points Claude Code at a 9Router provider instead of Anthropic, per process in the terminal or per machine in VSCode (Windows) |
+
 ## Contributing
 
 Issues and PRs are welcome — especially scheduler support beyond launchd/systemd/cron, notifier recipes, and prompt templates that survive real unattended use. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
