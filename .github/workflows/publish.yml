@@ -3,6 +3,7 @@ name: Publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,13 +12,57 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # secrets is not one of the contexts a step-level `if` can read, so the presence of the
+    # token has to be turned into a plain env value here.
+    env:
+      HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org
-      - run: npm test
-      - run: npm publish --provenance --access public
+
+      # A release cut from an older tag publishes whatever that tag contains, which is
+      # not necessarily the version the release is named after. Refuse before npm is touched.
+      - name: Release tag has to match package.json
+        if: github.event_name == 'release'
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::release ${GITHUB_REF_NAME} carries version ${tag} but package.json says ${pkg}; nothing published"
+            exit 1
+          fi
+          echo "release ${GITHUB_REF_NAME} matches package.json ${pkg}"
+
+      - name: Is this version already on the registry
+        id: registry
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          pkg="$(node -p "require('./package.json').version")"
+          if npm view "${name}@${pkg}" version >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "${name}@${pkg} is already on npm — this run has nothing to publish"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            echo "${name}@${pkg} is not on npm yet"
+          fi
+
+      # Without this the run gets all the way through pack and dies on ENEEDAUTH, which
+      # reads like a broken build rather than a repository that was never given a token.
+      - name: Publishing needs NPM_TOKEN
+        if: steps.registry.outputs.published == 'false' && env.HAS_NPM_TOKEN != 'true'
+        run: |
+          echo "::error::NPM_TOKEN is not configured in this repository, so CI cannot publish. Publish from a logged-in machine, or add the secret and re-run this workflow."
+          exit 1
+
+      - name: Test
+        if: steps.registry.outputs.published == 'false'
+        run: npm test
+
+      - name: Publish
+        if: steps.registry.outputs.published == 'false'
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
