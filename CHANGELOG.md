@@ -23,6 +23,9 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 - README lists the related tool `claude-router`, so the two projects are reachable from each
   other.
+- README has a `Limitations` section: one daily time per job, no retries and no catch-up,
+  no Windows scheduler, the interactive login the jobs depend on, the default permission
+  mode, and the fact that a run without a summary file is reported as failed.
 
 ## [0.1.4]
 

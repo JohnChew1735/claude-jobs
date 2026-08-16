@@ -126,6 +126,15 @@ The full walkthrough — how a turn executes, why the model list must not contai
 
 Run both and you cover the two halves: the gateway answers when someone asks, `claude-jobs` acts when nobody does.
 
+## Limitations
+
+- **One daily time per job.** `--at` takes `HH:MM` and schedules that job once a day. Several times a day, weekdays only, or a full cron expression means several jobs, or editing the generated scheduler unit by hand.
+- **No retries and no catch-up.** A failed run is reported, not repeated, and a run whose scheduled minute passed while the machine was asleep or off is handled by whatever the scheduler does — this tool adds no logic of its own on top.
+- **macOS, Linux, and any Unix with cron.** The scheduler is launchd on macOS, systemd user timers on Linux, and cron where either is missing. Windows Task Scheduler is not supported.
+- **The login is the dependency.** Jobs run through the Claude Code CLI as the user who installed them, so the machine needs an interactive login that is still valid. There is no API-key path by design, and no way to run this on a host nobody has ever logged into. `claude-jobs doctor` checks that before a schedule silently starts failing.
+- **`bypassPermissions` by default.** An unattended run cannot approve a tool call, so it starts with permissions bypassed in the working directory given to it. That is a trust decision about that directory, not a detail — `--permission-mode` makes it stricter.
+- **The agent's report is the only outcome.** Delivery is driven by the summary file the agent writes last. A run that ends without one is reported as failed, even if useful work happened before it stopped.
+
 ## Related tools
 
 Two separate concerns around the same CLI; either works on its own.
