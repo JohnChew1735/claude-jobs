@@ -4,6 +4,17 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+### Fixed
+
+- Cron marker matching is exact: uninstalling `alpha` no longer removes `alpha-2`, and a
+  marker followed by trailing spaces or tabs is still found. Thanks to @lakshanmuruganandam
+  (#3) and @floze-the-genius (#5).
+
+### Added
+
+- README lists the related tool `claude-router`, so the two projects are reachable from each
+  other.
+
 ## [0.1.4]
 
 ### Added
