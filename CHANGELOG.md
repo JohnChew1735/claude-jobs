@@ -9,6 +9,15 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - Cron marker matching is exact: uninstalling `alpha` no longer removes `alpha-2`, and a
   marker followed by trailing spaces or tabs is still found. Thanks to @lakshanmuruganandam
   (#3) and @floze-the-genius (#5).
+- `uninstall` leaves the rest of your crontab byte-identical. It used to collapse any run of
+  blank lines anywhere in the file — including between your own unrelated sections — and it
+  did so even when there was no job to remove. Thanks to @alexsmolya (#7).
+
+### Changed
+
+- The publish workflow reports why it did not publish: a release tag that disagrees with
+  `package.json` is refused, a version already on the registry finishes without republishing,
+  and a missing `NPM_TOKEN` fails on the first step naming the cause instead of after pack.
 
 ### Added
 
