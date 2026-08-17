@@ -13,8 +13,7 @@
     "agent",
     "headless",
     "oauth",
-    "openclaw",
-    "chatbot"
+    "openclaw"
   ],
   "license": "MIT",
   "type": "module",
