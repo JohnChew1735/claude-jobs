@@ -21,6 +21,10 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ### Added
 
+- The scheduler templates are covered by tests. `launchd.plist`, `systemd.service` and
+  `systemd.timer` had never been rendered by the suite, so a typo in any of them would have
+  shipped green and only failed on someone's machine at install time. Thanks to
+  @kragent66-glitch (#9).
 - README lists the related tool `claude-router`, so the two projects are reachable from each
   other.
 - README has a `Limitations` section: one daily time per job, no retries and no catch-up,
