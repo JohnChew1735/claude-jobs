@@ -52,6 +52,9 @@ This package generates files that then run unattended on machines nobody here ca
 1. One change per PR, with a title that says what it does.
 2. `npm test` passes, and new behaviour comes with a test.
 3. If the change alters a generated file, paste a before/after of the relevant lines in the description.
+4. Anything a user of the CLI would notice gets a line under `## [Unreleased]` in
+   [`CHANGELOG.md`](CHANGELOG.md). Write what it means for someone running a job, not the file
+   names. Pure refactors, typo fixes and internal test additions do not need one.
 4. Describe the failure mode it fixes. "Fixes the empty PATH under cron" is a better PR body than "improves reliability".
 
 Behaviour is covered by the [Code of Conduct](CODE_OF_CONDUCT.md).
