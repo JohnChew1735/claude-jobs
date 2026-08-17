@@ -5,6 +5,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { renderTemplate } from '../src/render.js'
 
 const CLI = fileURLToPath(new URL('../bin/claude-jobs.js', import.meta.url))
 
@@ -85,4 +86,39 @@ test('a job name that would break a unit filename is rejected', () => {
   withHome((home) => {
     assert.throws(() => cli(home, ['init', 'Bad Name', '--task', 'x']), /invalid job name/)
   })
+})
+
+test('every scheduler template renders with the vars writeSchedulerFiles supplies', () => {
+  const vars = {
+    JOB_NAME: 'demo',
+    LABEL: 'com.claude-jobs.demo',
+    RUNNER: '/home/user/.claude-jobs/runners/demo.sh',
+    LOG_FILE: '/home/user/.claude-jobs/logs/demo-summary.md',
+    WORKDIR: '/home/user/.claude-jobs/jobs/demo',
+    HOUR: 9,
+    MINUTE: 30,
+    HOUR_PADDED: '09',
+    MINUTE_PADDED: '30',
+  }
+
+  const launchd = renderTemplate('launchd.plist', vars)
+  assert.match(launchd, /<key>Label<\/key>\s*<string>com\.claude-jobs\.demo<\/string>/)
+  assert.ok(launchd.includes('<string>/home/user/.claude-jobs/runners/demo.sh</string>'))
+  assert.ok(launchd.includes('<string>/home/user/.claude-jobs/logs/demo-summary.md</string>'))
+  // launchd wants plist integers, so the unpadded HOUR/MINUTE belong here -- not the padded pair.
+  assert.match(launchd, /<key>Hour<\/key>\s*<integer>9<\/integer>/)
+  assert.match(launchd, /<key>Minute<\/key>\s*<integer>30<\/integer>/)
+  assert.ok(!launchd.includes('{{'), 'launchd.plist has an unresolved placeholder')
+
+  const service = renderTemplate('systemd.service', vars)
+  assert.ok(service.includes('Description=claude-jobs: demo'))
+  assert.ok(service.includes('ExecStart=/bin/bash /home/user/.claude-jobs/runners/demo.sh'))
+  assert.ok(service.includes('WorkingDirectory=/home/user/.claude-jobs/jobs/demo'))
+  assert.ok(!service.includes('{{'), 'systemd.service has an unresolved placeholder')
+
+  const timer = renderTemplate('systemd.timer', vars)
+  assert.ok(timer.includes('Description=claude-jobs timer: demo'))
+  // systemd parses the calendar field positionally, so here the padded pair is the correct one.
+  assert.ok(timer.includes('OnCalendar=*-*-* 09:30:00'))
+  assert.ok(!timer.includes('{{'), 'systemd.timer has an unresolved placeholder')
 })
