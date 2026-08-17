@@ -36,6 +36,17 @@ CLAUDE_JOBS_HOME=/tmp/cj-scratch node bin/claude-jobs.js run demo --dry-run
 - Prompt templates that have survived real unattended use, with a note on what failure they prevent.
 - Documentation fixes, especially anything that was wrong or has changed.
 
+## Ways to contribute that aren't code
+
+This package generates files that then run unattended on machines nobody here can see. Reports from those machines are the scarce thing, not patches:
+
+- **Tell us what a generated unit did on your platform.** `launchd.plist`, the systemd pair and the crontab line are rendered from templates; only the cron path is exercised on the maintainer's machine. A paste of the unit your install produced, plus what the scheduler said about it, is a bug report nobody else can write.
+- **Report a job that ran but did the wrong thing.** Empty `PATH` under cron, a login session that had expired, a summary that never arrived — the failure modes worth fixing are the ones that only appear at 3am on a machine in another timezone.
+- **Reproduce an open issue, or say that you could not.** Both outcomes move it; "not reproducible on Node 22 / macOS 15" is a result.
+- **Review an open pull request**, especially one that changes a template. A rendered file that looks right and is rejected by the scheduler is the expensive kind of mistake.
+
+`CHANGELOG.md` credits the person whose report or review caused a change, not only whoever wrote the commit.
+
 ## Pull requests
 
 1. One change per PR, with a title that says what it does.
