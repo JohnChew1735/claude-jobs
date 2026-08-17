@@ -14,5 +14,7 @@
 
 - [ ] `npm test` passes
 - [ ] New behaviour has a test
+- [ ] `CHANGELOG.md` has a line under `## [Unreleased]` saying what changes for someone
+      running a job — not needed for a pure refactor, a typo or an internal test
 - [ ] No new runtime dependencies
 - [ ] Docs updated if a flag or generated file changed
