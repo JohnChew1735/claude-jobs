@@ -4,6 +4,8 @@ All notable changes to this project are documented here. Format follows [Keep a 
 
 ## [Unreleased]
 
+## [0.1.5] — 2026-08-17
+
 ### Fixed
 
 - Cron marker matching is exact: uninstalling `alpha` no longer removes `alpha-2`, and a
@@ -18,6 +20,9 @@ All notable changes to this project are documented here. Format follows [Keep a 
 - The publish workflow reports why it did not publish: a release tag that disagrees with
   `package.json` is refused, a version already on the registry finishes without republishing,
   and a missing `NPM_TOKEN` fails on the first step naming the cause instead of after pack.
+- The package no longer declares a `chatbot` keyword. claude-jobs schedules the Claude Code
+  CLI; it does not implement a chat interface, so the keyword only put the package in
+  searches where it was the wrong answer.
 
 ### Added
 
