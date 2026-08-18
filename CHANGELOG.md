@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- An `Upgrading` section in the README. `run.sh` is generated once, at `init`, so a fix that
+  lands in the runner reaches existing jobs only when `claude-jobs install <name>` regenerates
+  it — which nothing said. It also names what an upgrade does **not** do: `job.json` is not
+  migrated, so a job created before `0.1.6` has no recorded cap and starts rotating at the
+  5 MiB default the first time its runner is rewritten.
+- A test covering the branch that makes that work — `writeRunner` falling back to the default
+  for a field an older `job.json` never recorded — including one case that executes the
+  regenerated runner, because the value reaches bash as an operand of `-gt` and a non-integer
+  would pass a text assertion and fail on a schedule instead.
+
 ## [0.1.6] — 2026-08-18
 
 ### Fixed
