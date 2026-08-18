@@ -33,7 +33,11 @@ function withHome(fn) {
     }
     return result
   } finally {
-    process.env.CLAUDE_JOBS_HOME = prev
+    // Assigning `undefined` to a process.env key stores the *string*
+    // "undefined", so an unset variable would come back set, pointing at a
+    // directory named undefined. Restoring absence means deleting the key.
+    if (prev === undefined) delete process.env.CLAUDE_JOBS_HOME
+    else process.env.CLAUDE_JOBS_HOME = prev
     rmSync(home, { recursive: true, force: true })
   }
 }
@@ -64,6 +68,22 @@ function captureLog(fn) {
   }
   return lines
 }
+
+test('withHome leaves CLAUDE_JOBS_HOME unset if it started unset', () => {
+  const prev = process.env.CLAUDE_JOBS_HOME
+  delete process.env.CLAUDE_JOBS_HOME
+  try {
+    withHome(() => {})
+    assert.equal(
+      'CLAUDE_JOBS_HOME' in process.env,
+      false,
+      'restoring an absent variable must delete the key, not assign the string "undefined"',
+    )
+  } finally {
+    if (prev === undefined) delete process.env.CLAUDE_JOBS_HOME
+    else process.env.CLAUDE_JOBS_HOME = prev
+  }
+})
 
 test('uninstall --purge removes the job dir, log and summary', () => {
   withHome(() => {
