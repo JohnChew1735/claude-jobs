@@ -24,6 +24,13 @@ All notable changes to this project are documented here. Format follows [Keep a 
   after the job had been written, leaving a half-job that took `claude-jobs list` down for
   every job sorted after it. The scheduler name is now validated before the first write.
   Thanks to @rigel08 (#16).
+- `uninstall --purge` now deletes the log and the last summary along with the job directory,
+  not just the directory. `claude-jobs list` stops showing the job the moment it's gone, and
+  `logs`/`status` both start with a lookup that throws for a name with no `job.json` — so the
+  leftover log (often the largest of the three files) and summary became unreachable through
+  the CLI, and a later `init` with the same name silently resumed appending to the old job's
+  log. Purge is a no-op, not an error, for a file that was never created. Thanks to
+  @vinhnguyenthanhdn (#22).
 
 ### Added
 
