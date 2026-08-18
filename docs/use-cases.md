@@ -7,6 +7,8 @@ The mechanism `claude-jobs` uses — let the already-logged-in Claude Code CLI e
 | Case | How | Notes |
 | --- | --- | --- |
 | Scheduled local automation | `claude -p "<prompt>" --permission-mode bypassPermissions --output-format stream-json` under launchd/systemd/cron | What this package generates. Running the CLI on your own machine is the product working as designed |
+| Scheduled work, first-party, in the cloud | [Routines](https://code.claude.com/docs/en/routines) — a saved prompt Anthropic runs on a schedule, an API call, or a GitHub event | Runs against a fresh clone, so no local files. Draws on the same subscription and is capped per day by plan (5 on Pro, 15 on Max, 25 on Team/Enterprise at the time of writing) |
+| Scheduled work, first-party, on your machine | [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks) — the Routines page in Claude Code Desktop, choosing **Local** | Local files and tools, its own run history, one catch-up run after a missed window. Fires only while the app is open and the computer is awake |
 | CI on GitHub | `claude-code-action` with the `claude_code_oauth_token` input instead of `anthropic_api_key` | Token from `claude setup-token`, stored as a repository secret. Runs draw on the quota of whoever created the token |
 | Your own agent or app | Claude Agent SDK authenticating as your account rather than with an API key | Supported for subscription plans |
 | Chat gateway / bot | Route turns through the local CLI as the execution backend instead of calling the API | A self-hosted gateway (OpenClaw and similar) answers chat messages on your subscription with no key in its config — worked example in [openclaw.md](openclaw.md) |
