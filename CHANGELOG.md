@@ -36,6 +36,10 @@ All notable changes to this project are documented here. Format follows [Keep a 
   Claude Code now ships — cloud Routines, Desktop scheduled tasks and `/loop` — and saying
   plainly which jobs belong to each. The README previously described the gap this tool fills
   without mentioning that first-party answers to part of it exist.
+- The README claim that a scheduled run reaches you without a screen is now shown as a run
+  instead of asserted: the `init`/`install` pair, the log lines of a launchd fire, and the
+  public gist the `--notify` command produced 55 seconds later. The paragraph also names
+  what that run does not prove — the machine still needs a user with a valid CLI login.
 
 ## [0.1.5] — 2026-08-17
 

@@ -148,6 +148,28 @@ The differences that actually decide it:
 
 If your job is "review yesterday's commits at 9am and tell me", start with a Desktop task — it is one form, it keeps its own history, and nothing here beats it. Come back when the job needs to run under an OS scheduler, report through a command, or live in version control next to the code it reads.
 
+### What the third bullet looks like when it fires
+
+A job installed from the published package, scheduled at a fixed minute, delivering through `gh gist create`:
+
+```bash
+claude-jobs init ci-watch --at 09:40 --jitter 0 \
+  --task 'read the latest CI conclusion on main and the count of open external PRs for five repos, report one line each' \
+  --notify 'printf "%s\n" "$CLAUDE_JOB_MESSAGE" | gh gist create -p -f ci-watch.md -'
+claude-jobs install ci-watch
+```
+
+launchd fired it with nobody at the keyboard, and the log of that run reads:
+
+```
+[2026-08-18 09:40:05] === session start ===
+[2026-08-18 09:41:00] === session end, exit=0 ===
+✓ Created public gist ci-watch.md
+https://gist.github.com/vinhnguyenthanhdn/09b7430e84ddf0fdc31acf3c578ed4b5
+```
+
+The [gist](https://gist.github.com/vinhnguyenthanhdn/09b7430e84ddf0fdc31acf3c578ed4b5) is the whole point: 55 seconds after the unit fired, the agent's report was readable by someone who has no access to that machine. What this does *not* show is a host nobody has ever logged into — the run used the CLI login of the user who installed it, which is the dependency named under Limitations.
+
 ## Limitations
 
 - **One daily time per job.** `--at` takes `HH:MM` and schedules that job once a day. Several times a day, weekdays only, or a full cron expression means several jobs, or editing the generated scheduler unit by hand.
