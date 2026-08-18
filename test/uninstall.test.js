@@ -18,12 +18,35 @@ function withHome(fn) {
   const prev = process.env.CLAUDE_JOBS_HOME
   process.env.CLAUDE_JOBS_HOME = home
   try {
-    return fn(home)
+    const result = fn(home)
+    if (result && typeof result.then === 'function') {
+      // The body has already started, and there is no way to stop it: it will
+      // resume after this throw, against the restored env and a temp directory
+      // that no longer exists. Swallow whatever it does with that, so the one
+      // failure reported is this one — an unhandled rejection surfacing later
+      // would be attributed to whichever test happened to be running.
+      result.then(
+        () => {},
+        () => {},
+      )
+      throw new Error('withHome() does not support async callbacks')
+    }
+    return result
   } finally {
     process.env.CLAUDE_JOBS_HOME = prev
     rmSync(home, { recursive: true, force: true })
   }
 }
+
+test('withHome rejects async callbacks', () => {
+  assert.throws(
+    () =>
+      withHome(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5))
+      }),
+    /withHome\(\) does not support async callbacks/,
+  )
+})
 
 function makeJob(name) {
   ensureDirs()
