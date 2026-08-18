@@ -35,6 +35,22 @@ claude-jobs doctor           # checks the binary, the login, and your scheduler
 
 Requires Node 18.17+, Claude Code installed and logged in (`claude auth login`) **as the same user that will run the jobs**.
 
+### Upgrading
+
+Upgrading the package does not touch jobs you already created. `run.sh` is generated once, at `init`, and every job keeps the copy it was born with — so a fix that lands in the runner reaches new jobs only, until you say otherwise.
+
+`install` regenerates it:
+
+```bash
+npm install -g claude-jobs@latest
+claude-jobs list                       # the names you have
+claude-jobs install <name>             # rewrites run.sh from the current template
+```
+
+That is the whole upgrade path, and it is safe to repeat — `install` is what you already run to register a job, and re-running it rewrites the runner and the scheduler unit from your existing `job.json`. Your prompt is not touched.
+
+What it does **not** do is migrate `job.json`. A field added after your job was created is simply absent, and the runner falls back to that field's default. Concretely, for the one field where that is visible today: a job created before `0.1.6` has no recorded `--log-max-bytes`, so re-running `install` gives it the 5 MiB default and its log starts rotating. Keep the old append-forever behaviour with `--log-max-bytes 0` at `init`, or by editing `LOG_MAX_BYTES` in the job's `run.sh`.
+
 ## Commands
 
 | Command | What it does |
@@ -178,7 +194,7 @@ The [gist](https://gist.github.com/vinhnguyenthanhdn/09b7430e84ddf0fdc31acf3c578
 - **The login is the dependency.** Jobs run through the Claude Code CLI as the user who installed them, so the machine needs an interactive login that is still valid. There is no API-key path by design, and no way to run this on a host nobody has ever logged into. `claude-jobs doctor` checks that before a schedule silently starts failing.
 - **`bypassPermissions` by default.** An unattended run cannot approve a tool call, so it starts with permissions bypassed in the working directory given to it. That is a trust decision about that directory, not a detail — `--permission-mode` makes it stricter.
 - **The agent's report is the only outcome.** Delivery is driven by the summary file the agent writes last. A run that ends without one is reported as failed, even if useful work happened before it stopped.
-- **One log per job, rotated once.** Every run appends to `~/.claude-jobs/logs/<name>.log`, and the session is written there in `stream-json`, so a single short run is tens of kilobytes. At the start of a run the runner moves the log to `<name>.log.1` if it has reached **5 MiB** (`--log-max-bytes`, default `5242880`), replacing any older `.1`. That bounds a job at two files and keeps the previous run available for a post-mortem; it is not a full log-rotation policy, and nothing prunes the `.1`. `--log-max-bytes 0` turns rotation off and restores append-forever behaviour. The value is written into the generated runner as `LOG_MAX_BYTES`, so an existing job can be changed by editing its `run.sh` rather than re-creating it.
+- **One log per job, rotated once.** Every run appends to `~/.claude-jobs/logs/<name>.log`, and the session is written there in `stream-json`, so a single short run is tens of kilobytes. At the start of a run the runner moves the log to `<name>.log.1` if it has reached **5 MiB** (`--log-max-bytes`, default `5242880`), replacing any older `.1`. That bounds a job at two files and keeps the previous run available for a post-mortem; it is not a full log-rotation policy, and nothing prunes the `.1`. `--log-max-bytes 0` turns rotation off and restores append-forever behaviour. The value is written into the generated runner as `LOG_MAX_BYTES`, so an existing job is changed by editing that line in its `run.sh`, or by re-running `claude-jobs install <name>` — see [Upgrading](#upgrading), including what that does to a job created before this option existed.
 
 ## Related tools
 
