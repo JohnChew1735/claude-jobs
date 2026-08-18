@@ -33,10 +33,9 @@ const systemdDir = () => join(homedir(), '.config', 'systemd', 'user')
 const systemdUnit = (name, ext) => join(systemdDir(), `claude-jobs-${name}.${ext}`)
 const cronMarker = (name) => `# claude-jobs:${name}`
 
-/** Writes the scheduler's own config file. Returns the paths it created. */
-export function writeSchedulerFiles(job) {
-  const { name, scheduler, hour, minute, workdir } = job
-  const vars = {
+export function schedulerVars(job) {
+  const { name, hour, minute, workdir } = job
+  return {
     JOB_NAME: name,
     LABEL: launchdLabel(name),
     RUNNER: runnerFile(name),
@@ -47,6 +46,12 @@ export function writeSchedulerFiles(job) {
     HOUR_PADDED: pad(hour),
     MINUTE_PADDED: pad(minute),
   }
+}
+
+/** Writes the scheduler's own config file. Returns the paths it created. */
+export function writeSchedulerFiles(job) {
+  const { name, scheduler } = job
+  const vars = schedulerVars(job)
 
   if (scheduler === 'launchd') {
     const path = launchdPlist(name)

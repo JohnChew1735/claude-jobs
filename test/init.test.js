@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { renderTemplate } from '../src/render.js'
+import { schedulerVars } from '../src/schedulers.js'
 
 const CLI = fileURLToPath(new URL('../bin/claude-jobs.js', import.meta.url))
 
@@ -209,23 +210,18 @@ test('a job name that would break a unit filename is rejected', () => {
   })
 })
 
-test('every scheduler template renders with the vars writeSchedulerFiles supplies', () => {
-  const vars = {
-    JOB_NAME: 'demo',
-    LABEL: 'com.claude-jobs.demo',
-    RUNNER: '/home/user/.claude-jobs/runners/demo.sh',
-    LOG_FILE: '/home/user/.claude-jobs/logs/demo-summary.md',
-    WORKDIR: '/home/user/.claude-jobs/jobs/demo',
-    HOUR: 9,
-    MINUTE: 30,
-    HOUR_PADDED: '09',
-    MINUTE_PADDED: '30',
-  }
+test('every scheduler template renders with the vars schedulerVars supplies', () => {
+  const vars = schedulerVars({
+    name: 'demo',
+    hour: 9,
+    minute: 30,
+    workdir: '/home/user/.claude-jobs/jobs/demo',
+  })
 
   const launchd = renderTemplate('launchd.plist', vars)
   assert.match(launchd, /<key>Label<\/key>\s*<string>com\.claude-jobs\.demo<\/string>/)
-  assert.ok(launchd.includes('<string>/home/user/.claude-jobs/runners/demo.sh</string>'))
-  assert.ok(launchd.includes('<string>/home/user/.claude-jobs/logs/demo-summary.md</string>'))
+  assert.ok(launchd.includes(`<string>${vars.RUNNER}</string>`))
+  assert.ok(launchd.includes(`<string>${vars.LOG_FILE}</string>`))
   // launchd wants plist integers, so the unpadded HOUR/MINUTE belong here -- not the padded pair.
   assert.match(launchd, /<key>Hour<\/key>\s*<integer>9<\/integer>/)
   assert.match(launchd, /<key>Minute<\/key>\s*<integer>30<\/integer>/)
@@ -233,8 +229,8 @@ test('every scheduler template renders with the vars writeSchedulerFiles supplie
 
   const service = renderTemplate('systemd.service', vars)
   assert.ok(service.includes('Description=claude-jobs: demo'))
-  assert.ok(service.includes('ExecStart=/bin/bash /home/user/.claude-jobs/runners/demo.sh'))
-  assert.ok(service.includes('WorkingDirectory=/home/user/.claude-jobs/jobs/demo'))
+  assert.ok(service.includes(`ExecStart=/bin/bash ${vars.RUNNER}`))
+  assert.ok(service.includes(`WorkingDirectory=${vars.WORKDIR}`))
   assert.ok(!service.includes('{{'), 'systemd.service has an unresolved placeholder')
 
   const timer = renderTemplate('systemd.timer', vars)
