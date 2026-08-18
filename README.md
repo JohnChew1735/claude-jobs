@@ -24,6 +24,8 @@ Claude Code is a real product with a real login. On the machine where you are al
 
 **Non-goals:** this does not proxy, resell or wrap your subscription as an API for other tools. It runs the official CLI, as you, on your own machine. See [docs/policy.md](docs/policy.md).
 
+Claude Code also schedules work by itself now, in three different places. Read [Do you need this?](#do-you-need-this) before installing — for a good share of daily jobs the built-in answer is the better one.
+
 ## Install
 
 ```bash
@@ -125,6 +127,26 @@ node examples/openclaw/apply-claude-cli-backend.mjs --write    # apply it
 The full walkthrough — how a turn executes, why the model list must not contain a direct-API model, and what a long-running gateway does differently from a one-shot job — is in [docs/openclaw.md](docs/openclaw.md).
 
 Run both and you cover the two halves: the gateway answers when someone asks, `claude-jobs` acts when nobody does.
+
+## Do you need this?
+
+Often not. Claude Code ships three ways to schedule work, and they cover most of what people reach for a wrapper script to do. Checked against the docs on 2026-08-18:
+
+| Option | Runs on | Needs | Reach for it when |
+|---|---|---|---|
+| [Routines](https://code.claude.com/docs/en/routines) | Anthropic's cloud | Nothing of yours running | The work must happen whether or not your machine is on, or a GitHub event / API call is the trigger |
+| [Desktop scheduled tasks](https://code.claude.com/docs/en/desktop-scheduled-tasks) | Your machine | Claude Code Desktop open, computer awake | You want local files plus a UI: run history, a notification per fire, and a permission prompt you can answer later |
+| [`/loop`](https://code.claude.com/docs/en/scheduled-tasks) | Your machine | An open session | Polling something for the next few minutes or hours, inside the session you are already in |
+| `claude-jobs` (this repo) | Your machine | An OS scheduler and a valid CLI login | The schedule has to be an OS-level unit and the outcome has to leave the machine on its own |
+
+The differences that actually decide it:
+
+- **Cloud routines clone your repo fresh.** No uncommitted work, no local database, no file outside the repo, no tool that only exists on your laptop. That rules out a whole class of jobs, and rules *in* every job that should survive a closed lid.
+- **A Desktop task fires only while the app is open and the machine is awake**, and it can stall mid-run waiting for a permission you have not granted yet. Both are fine at a desk. Neither is fine on a box you SSH into.
+- **`claude-jobs` has no UI at all**, and that is the point: the schedule is a launchd/systemd/cron unit, the job is three files you can read and commit, and `--notify` hands the agent's summary to any command — `mail`, `gh issue comment`, a Slack webhook — so the result reaches you without a screen to look at.
+- **Routines draw on the same subscription** and are capped per day by plan (5 on Pro, 15 on Max, 25 on Team/Enterprise at the time of writing). Jobs here are capped by nothing but your own usage limits, because they are ordinary CLI sessions.
+
+If your job is "review yesterday's commits at 9am and tell me", start with a Desktop task — it is one form, it keeps its own history, and nothing here beats it. Come back when the job needs to run under an OS scheduler, report through a command, or live in version control next to the code it reads.
 
 ## Limitations
 

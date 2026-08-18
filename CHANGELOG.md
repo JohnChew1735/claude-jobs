@@ -32,6 +32,10 @@ All notable changes to this project are documented here. Format follows [Keep a 
   `npm install claude-jobs` resolves to, so a removal there breaks installed code, and the
   rule was previously only prose. The scanner is covered by tests, including one that pins
   the current public surface of `src/index.js`.
+- A `Do you need this?` section in the README comparing this tool with the three schedulers
+  Claude Code now ships — cloud Routines, Desktop scheduled tasks and `/loop` — and saying
+  plainly which jobs belong to each. The README previously described the gap this tool fills
+  without mentioning that first-party answers to part of it exist.
 
 ## [0.1.5] — 2026-08-17
 
