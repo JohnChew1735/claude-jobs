@@ -36,6 +36,10 @@ All notable changes to this project are documented here. Format follows [Keep a 
   Claude Code now ships — cloud Routines, Desktop scheduled tasks and `/loop` — and saying
   plainly which jobs belong to each. The README previously described the gap this tool fills
   without mentioning that first-party answers to part of it exist.
+- A test that ties the `package.json` version to the newest released heading in this file.
+  Both are read as "the shipped version" — one by `npm install` and `claude-jobs --version`,
+  the other by anyone reading the changelog — and nothing compared them, so a release could
+  move one and leave the other behind with the suite still green.
 - The README claim that a scheduled run reaches you without a screen is now shown as a run
   instead of asserted: the `init`/`install` pair, the log lines of a launchd fire, and the
   public gist the `--notify` command produced 55 seconds later. The paragraph also names
